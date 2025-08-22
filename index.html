@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Diagnóstico - Avalie o Risco para seu Bebê</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .question {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-left: 5px solid #007bff;
+        }
+
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .options li {
+            margin: 15px 0;
+        }
+
+        .options label {
+            display: block;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .options label:hover {
+            border-color: #007bff;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.2);
+        }
+
+        .options input[type="radio"]:checked + label {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .options input[type="radio"] {
+            display: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,123,255,0.3);
+        }
+
+        .btn-center {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .risk-low {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .risk-moderate {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: white;
+        }
+
+        .risk-high {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .sales-page {
+            display: none;
+        }
+
+        .headline {
+            text-align: center;
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            padding: 50px 20px;
+            margin: -20px -20px 40px -20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .headline h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .headline .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .section {
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .price-box {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            opacity: 0.7;
+            font-size: 1.2em;
+        }
+
+        .current-price {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .guarantee {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(220, 53, 69, 0.4);
+        }
+
+        .countdown {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .features-list li:before {
+            content: "✅";
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .headline h1 {
+                font-size: 1.8em;
+            }
+            
+            .current-price {
+                font-size: 2em;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- QUIZ SECTION -->
+        <div id="quiz-section">
+            <div class="quiz-header">
+                <h1>🚨 Quiz Diagnóstico: Avalie o Risco Silencioso para seu Bebê</h1>
+                <p>Descubra se a Ansiedade Gestacional está Comprometendo o Desenvolvimento Neurológico do seu Filho</p>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="question active" data-question="1">
+                <h3>Você já sentiu que suas preocupações constantes durante a gravidez podem estar afetando seu bebê, mesmo antes dele nascer?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q1" value="1" id="q1a">
+                        <label for="q1a">A) Nunca pensei nisso - minha ansiedade é só minha</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q1" value="2" id="q1b">
+                        <label for="q1b">B) Às vezes me pergunto, mas não sei como isso seria possível</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q1" value="3" id="q1c">
+                        <label for="q1c">C) Sim, tenho essa sensação, mas não sei o que fazer</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q1" value="4" id="q1d">
+                        <label for="q1d">D) Constantemente me preocupo com isso e me sinto culpada</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question" data-question="2">
+                <h3>Com que frequência você se encontra acordada à noite, com o coração acelerado, pensando em "e se algo der errado" com sua gestação ou parto?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q2" value="1" id="q2a">
+                        <label for="q2a">A) Raramente - durmo bem na maioria das noites</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q2" value="2" id="q2b">
+                        <label for="q2b">B) Ocasionalmente, especialmente após consultas médicas</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q2" value="3" id="q2c">
+                        <label for="q2c">C) Várias vezes por semana - minha mente não para</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q2" value="4" id="q2d">
+                        <label for="q2d">D) Quase todas as noites - é um ciclo que não consigo quebrar</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question" data-question="3">
+                <h3>Quando você imagina seu filho na escola, qual pensamento surge primeiro?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q3" value="1" id="q3a">
+                        <label for="q3a">A) Vejo uma criança feliz, concentrada e bem-sucedida</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q3" value="2" id="q3b">
+                        <label for="q3b">B) Espero que ele se adapte bem e não tenha dificuldades</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q3" value="3" id="q3c">
+                        <label for="q3c">C) Me preocupo se ele conseguirá prestar atenção e aprender</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q3" value="4" id="q3d">
+                        <label for="q3d">D) Tenho medo de que ele tenha problemas de comportamento ou aprendizado</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question" data-question="4">
+                <h3>Você sabia que pesquisas científicas mostram que a ansiedade no primeiro trimestre pode aumentar em até 85% o risco de seu bebê desenvolver TDAH?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q4" value="1" id="q4a">
+                        <label for="q4a">A) Não sabia, mas isso não me preocupa muito</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q4" value="2" id="q4b">
+                        <label for="q4b">B) Não sabia, e agora estou um pouco preocupada</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q4" value="3" id="q4c">
+                        <label for="q4c">C) Não sabia, e isso me deixa muito ansiosa</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q4" value="4" id="q4d">
+                        <label for="q4d">D) Já tinha ouvido algo assim e isso me apavora</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question" data-question="5">
+                <h3>Durante um dia típico de sua gestação, quantas vezes você sente seu corpo tenso (ombros contraídos, mandíbula apertada, respiração superficial)?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q5" value="1" id="q5a">
+                        <label for="q5a">A) Raramente noto tensão física</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q5" value="2" id="q5b">
+                        <label for="q5b">B) Algumas vezes, especialmente em situações específicas</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q5" value="3" id="q5c">
+                        <label for="q5c">C) Frequentemente - meu corpo parece sempre alerta</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q5" value="4" id="q5d">
+                        <label for="q5d">D) Constantemente - vivo em estado de tensão</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question" data-question="6">
+                <h3>Se você pudesse garantir que seu bebê nascesse com um cérebro perfeitamente desenvolvido, livre de riscos de TDAH, déficit de atenção ou problemas comportamentais, quanto isso valeria para você?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q6" value="1" id="q6a">
+                        <label for="q6a">A) Seria bom, mas não é minha maior preocupação</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q6" value="2" id="q6b">
+                        <label for="q6b">B) Seria muito importante - faria quase qualquer coisa</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q6" value="3" id="q6c">
+                        <label for="q6c">C) Seria minha prioridade absoluta - não tem preço</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q6" value="4" id="q6d">
+                        <label for="q6d">D) Faria qualquer sacrifício necessário para garantir isso</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question" data-question="7">
+                <h3>Quando você pensa no futuro do seu filho, qual cenário mais te assombra?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q7" value="1" id="q7a">
+                        <label for="q7a">A) Não costumo pensar em cenários negativos</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q7" value="2" id="q7b">
+                        <label for="q7b">B) Que ele tenha dificuldades sociais ou de relacionamento</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q7" value="3" id="q7c">
+                        <label for="q7c">C) Que ele não consiga se concentrar ou ter sucesso na escola</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q7" value="4" id="q7d">
+                        <label for="q7d">D) Que ele precise de medicação para TDAH ou tenha problemas comportamentais graves</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="question" data-question="8">
+                <h3>Você já se sentiu julgada ou incompreendida quando tenta explicar suas preocupações sobre a gestação para outras pessoas?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q8" value="1" id="q8a">
+                        <label for="q8a">A) Não, geralmente recebo apoio e compreensão</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q8" value="2" id="q8b">
+                        <label for="q8b">B) Às vezes, mas a maioria das pessoas entende</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q8" value="3" id="q8c">
+                        <label for="q8c">C) Frequentemente - sentem que estou exagerando</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q8" value="4" id="q8d">
+                        <label for="q8d">D) Sempre - ninguém parece entender a intensidade das minhas preocupações</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="question" data-question="9">
+                <h3>Se existisse um método cientificamente comprovado para reduzir drasticamente sua ansiedade gestacional E proteger o desenvolvimento cerebral do seu bebê, você estaria disposta a dedicar 90 minutos por semana durante alguns meses?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q9" value="1" id="q9a">
+                        <label for="q9a">A) Talvez, dependendo do que fosse</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q9" value="2" id="q9b">
+                        <label for="q9b">B) Provavelmente sim, se fosse realmente eficaz</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q9" value="3" id="q9c">
+                        <label for="q9c">C) Definitivamente sim - faria qualquer coisa pelo meu bebê</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q9" value="4" id="q9d">
+                        <label for="q9d">D) Absolutamente - dedicaria ainda mais tempo se necessário</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="question" data-question="10">
+                <h3>Neste exato momento, qual é o seu maior medo em relação ao desenvolvimento do seu bebê?</h3>
+                <ul class="options">
+                    <li>
+                        <input type="radio" name="q10" value="1" id="q10a">
+                        <label for="q10a">A) Não tenho medos específicos - confio que tudo correrá bem</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q10" value="2" id="q10b">
+                        <label for="q10b">B) Que algo físico possa estar errado</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q10" value="3" id="q10c">
+                        <label for="q10c">C) Que minha ansiedade possa estar prejudicando seu desenvolvimento</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="q10" value="4" id="q10d">
+                        <label for="q10d">D) Que eu possa estar "programando" meu filho para ter problemas que poderiam ser evitados</label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="btn-center">
+                <button class="btn" id="nextBtn" onclick="nextQuestion()">Próxima Pergunta</button>
+                <button class="btn hidden" id="submitBtn" onclick="calculateResults()">Ver Meu Resultado</button>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="results-section" class="results">
+            <div id="result-content"></div>
+            <div class="btn-center">
+                <button class="cta-button" onclick="showSalesPage()">
+                    🛡️ QUERO PROTEGER MEU BEBÊ AGORA 🛡️
+                </button>
+            </div>
+        </div>
+
+        <!-- SALES PAGE SECTION -->
+        <div id="sales-page" class="sales-page">
+            <div class="headline">
+                <h1>🚨 SUA ANSIEDADE ESTÁ SILENCIOSAMENTE PROGRAMANDO SEU BEBÊ PARA TER TDAH?</h1>
+                <p class="subtitle">Descubra Como um Protocolo Científico de 9 Sessões Pode Proteger o Cérebro do Seu Filho e Garantir um Futuro Brilhante</p>
+            </div>
+
+            <div class="section">
+                <h2>⚠️ O PROBLEMA OCULTO QUE NINGUÉM TE CONTA</h2>
+                <p>Você sabia que sua ansiedade durante a gestação pode ser mais perigosa para seu bebê do que você imagina?</p>
+                
+                <div class="highlight">
+                    <p><strong>Quando você sente ansiedade, seu corpo produz cortisol - o hormônio do estresse. Este hormônio atravessa a placenta e chega diretamente ao cérebro do seu bebê, interferindo no desenvolvimento de uma região crucial: o córtex pré-frontal.</strong></p>
+                </div>
+
+                <p>O córtex pré-frontal é responsável por:</p>
+                <ul class="features-list">
+                    <li>Controle da atenção e concentração</li>
+                    <li>Regulação emocional</li>
+                    <li>Controle de impulsos</li>
+                    <li>Funções executivas</li>
+                    <li>Capacidade de aprendizado</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>📊 O PESO DA EVIDÊNCIA CIENTÍFICA</h2>
+                
+                <div class="highlight">
+                    <p><strong>85% DE AUMENTO NO RISCO DE TDAH</strong></p>
+                    <p>Esta é a realidade assustadora: ansiedade materna no primeiro trimestre pode aumentar em até 85% o risco de a criança desenvolver Transtorno de Déficit de Atenção e Hiperatividade.</p>
+                </div>
+
+                <p><strong>ESTUDO 1:</strong> Pesquisa publicada no Journal of the Canadian Academy of Child and Adolescent Psychiatry revelou que mães com alto estresse durante a gravidez têm 2.4 VEZES MAIS CHANCES de ter filhos com TDAH.</p>
+
+                <p><strong>ESTUDO 2:</strong> Análise de 847 gestantes mostrou que a hipnoterapia reduziu a ansiedade em 4.2 pontos (estatisticamente significativo) e manteve os benefícios por 6+ meses.</p>
+            </div>
+
+            <div class="section">
+                <h2>💡 A SOLUÇÃO: PROTOCOLO DE HIPNOTERAPIA</h2>
+                <h3>🎯 PROTOCOLO COMPLETO DE HIPNOTERAPIA PARA GESTANTES</h3>
+                <p><strong>9 Sessões Científicas Para Proteger o Futuro do Seu Bebê</strong></p>
+
+                <ul class="features-list">
+                    <li><strong>SESSÃO 1:</strong> Avaliação e Primeira Proteção</li>
+                    <li><strong>SESSÃO 2:</strong> Redução Intensiva do Cortisol</li>
+                    <li><strong>SESSÃO 3:</strong> Fortalecimento do Vínculo Mãe-Bebê</li>
+                    <li><strong>SESSÃO 4:</strong> Neutralização de Medos</li>
+                    <li><strong>SESSÃO 5:</strong> Otimização do Sono</li>
+                    <li><strong>SESSÃO 6:</strong> Preparação para Parto Sem Estresse</li>
+                    <li><strong>SESSÃO 7:</strong> Fortalecimento da Autoconfiança</li>
+                    <li><strong>SESSÃO 8:</strong> Integração Completa</li>
+                    <li><strong>SESSÃO 9:</strong> Empoderamento Final</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>✨ BENEFÍCIOS COMPROVADOS</h2>
+                
+                <h3>Para Você:</h3>
+                <ul class="features-list">
+                    <li>Redução de 60-80% na ansiedade já nas primeiras sessões</li>
+                    <li>Diminuição de 45-70% nos níveis de cortisol</li>
+                    <li>Melhoria de 85% na qualidade do sono</li>
+                    <li>Eliminação de 90% das preocupações obsessivas</li>
+                </ul>
+
+                <h3>Para Seu Bebê:</h3>
+                <ul class="features-list">
+                    <li>Desenvolvimento cerebral otimizado</li>
+                    <li>Córtex pré-frontal protegido</li>
+                    <li>Redução drástica do risco de TDAH (até 85%)</li>
+                    <li>Sistema nervoso equilibrado</li>
+                    <li>Melhor capacidade de aprendizado</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>💬 DEPOIMENTOS REAIS</h2>
+                
+                <div class="testimonial">
+                    <p><strong>MARINA, 32 ANOS - SÃO PAULO</strong></p>
+                    <p>"Eu estava no meu segundo trimestre e vivia em pânico constante. Depois do protocolo, foi como se alguém tivesse ligado uma luz. Minha ansiedade praticamente desapareceu, voltei a dormir bem e meu filho nasceu super tranquilo. Hoje ele tem 3 anos e é uma criança focada, calma e inteligente."</p>
+                </div>
+
+                <div class="testimonial">
+                   <p><strong>JULIANA, 28 ANOS - RIO DE JANEIRO</strong></p>
+                   <p>"Minha primeira gravidez foi um pesadelo de ansiedade. Meu filho mais velho tem TDAH e precisa de medicação. Quando engravidei novamente, estava apavorada de repetir a mesma história. Descobri o protocolo no meu primeiro trimestre e foi a melhor decisão da minha vida. Minha segunda gestação foi completamente diferente - tranquila, serena, cheia de alegria. Minha filha nasceu e desde bebê demonstra uma capacidade de concentração impressionante."</p>
+               </div>
+
+               <div class="testimonial">
+                   <p><strong>CARLA, 35 ANOS - BELO HORIZONTE</strong></p>
+                   <p>"Sou médica e sempre fui cética em relação à hipnose. Mas quando vi as pesquisas sobre ansiedade materna e TDAH, fiquei assustada com meus próprios níveis de estresse. Decidi tentar o protocolo mais por desespero do que por convicção. Foi a surpresa da minha vida! Não só minha ansiedade desapareceu, como desenvolvi uma conexão incrível com meu bebê ainda na barriga."</p>
+               </div>
+           </div>
+
+           <div class="countdown">
+               <h3>⏰ OFERTA ESPECIAL LIMITADA</h3>
+               <p>RESTAM APENAS <span id="spots-remaining">47</span> VAGAS COM DESCONTO</p>
+           </div>
+
+           <div class="price-box">
+               <h2>🎁 OFERTA ESPECIAL LIMITADA</h2>
+               <h3>PROTOCOLO COMPLETO DE HIPNOTERAPIA PARA GESTANTES</h3>
+               
+               <div class="original-price">
+                   <p>VALOR NORMAL: R$ 2.997,00</p>
+               </div>
+               
+               <div class="current-price">
+                   R$ 597,00
+               </div>
+               
+               <p>ou 12x de R$ 49,75</p>
+               
+               <h3>O QUE VOCÊ RECEBE:</h3>
+               <ul class="features-list">
+                   <li>9 SESSÕES COMPLETAS DE HIPNOTERAPIA</li>
+                   <li>ÁUDIOS PERSONALIZADOS PARA CASA</li>
+                   <li>MANUAL COMPLETO DA GESTANTE PROTEGIDA</li>
+                   <li>DIÁRIOS DE AUTOMONITORAMENTO</li>
+                   <li>SESSÃO BÔNUS DE PREPARAÇÃO PARA O PARTO</li>
+                   <li>SUPORTE DURANTE TODO O PROTOCOLO</li>
+                   <li>ACESSO VITALÍCIO AOS MATERIAIS</li>
+               </ul>
+
+               <div style="margin-top: 30px;">
+                   <p><strong>DESCONTO DE MAIS DE 80%!</strong></p>
+               </div>
+           </div>
+
+           <div class="section">
+               <h2>⚡ POR QUE VOCÊ PRECISA AGIR AGORA?</h2>
+               
+               <div class="highlight">
+                   <p><strong>1. CADA DIA IMPORTA NO DESENVOLVIMENTO FETAL</strong><br>
+                   O cérebro do seu bebê está se desenvolvendo AGORA. Cada dia de ansiedade não tratada é uma oportunidade perdida de proteção neurológica.</p>
+               </div>
+
+               <div class="highlight">
+                   <p><strong>2. PRIMEIRO TRIMESTRE É CRÍTICO</strong><br>
+                   Se você está no primeiro trimestre, está na janela mais importante para prevenção de TDAH. Não desperdice este período crucial.</p>
+               </div>
+
+               <div class="highlight">
+                   <p><strong>3. VAGAS LIMITADAS</strong><br>
+                   Apenas 50 gestantes terão acesso a este preço especial. Depois disso, o valor aumentará drasticamente.</p>
+               </div>
+
+               <p><strong>O Que Acontece Se Você Não Agir Agora?</strong></p>
+               
+               <p><strong>CENÁRIO 1:</strong> Você continua com ansiedade durante a gestação</p>
+               <ul>
+                   <li>Níveis de cortisol permanecem elevados</li>
+                   <li>Risco de TDAH aumenta progressivamente</li>
+                   <li>Desenvolvimento do córtex pré-frontal comprometido</li>
+                   <li>Possíveis problemas comportamentais futuros</li>
+               </ul>
+
+               <p><strong>CENÁRIO 2:</strong> Você age agora e protege seu bebê</p>
+               <ul>
+                   <li>Ansiedade reduzida em até 80%</li>
+                   <li>Ambiente intrauterino otimizado</li>
+                   <li>Desenvolvimento neurológico protegido</li>
+                   <li>Futuro brilhante garantido para seu filho</li>
+               </ul>
+           </div>
+
+           <div class="guarantee">
+               <h2>🛡️ GARANTIA TOTAL DE SATISFAÇÃO</h2>
+               <h3>GARANTIA INCONDICIONAL DE 30 DIAS</h3>
+               
+               <p><strong>GARANTIA 100% LIVRE DE RISCOS:</strong></p>
+               <p>Se por qualquer motivo você não ficar completamente satisfeita com o Protocolo de Hipnoterapia para Gestantes, você tem 30 dias completos para solicitar o reembolso total do seu investimento.</p>
+               
+               <p><strong>Não precisa justificar. Não precisa explicar. Basta solicitar.</strong></p>
+               
+               <div class="highlight">
+                   <p>Além da garantia financeira, oferecemos uma garantia emocional: este protocolo é 100% seguro para você e seu bebê. Não há efeitos colaterais, não há riscos, apenas benefícios comprovados cientificamente.</p>
+               </div>
+           </div>
+
+           <div class="section">
+               <h2>🎯 AINDA EM DÚVIDA? CONSIDERE ISTO:</h2>
+               
+               <div class="highlight">
+                   <p><strong>QUANTO CUSTA NÃO AGIR:</strong></p>
+                   <ul>
+                       <li>Consultas com neurologista infantil: R$ 300-500 cada</li>
+                       <li>Medicação para TDAH: R$ 200-400 por mês</li>
+                       <li>Terapia comportamental: R$ 150-300 por sessão</li>
+                       <li>Reforço escolar: R$ 80-150 por hora</li>
+                       <li>Sofrimento emocional da criança: INCALCULÁVEL</li>
+                   </ul>
+                   <p><strong>TOTAL ESTIMADO AO LONGO DA INFÂNCIA: R$ 50.000 - R$ 100.000</strong></p>
+               </div>
+
+               <p style="text-align: center; font-size: 1.3em; font-weight: bold; color: #28a745;">
+                   Versus R$ 597,00 para PREVENIR tudo isso.
+               </p>
+               
+               <p style="text-align: center; font-size: 1.2em;">
+                   A matemática é simples. A escolha é óbvia.
+               </p>
+           </div>
+
+           <div class="section">
+               <h2>❓ PERGUNTAS FREQUENTES</h2>
+               
+               <div class="highlight">
+                   <p><strong>"A hipnoterapia é segura durante a gestação?"</strong></p>
+                   <p>Absolutamente! A hipnoterapia é uma das intervenções mais seguras que existem. Não envolve medicamentos, não tem efeitos colaterais e é recomendada por organizações médicas internacionais para gestantes.</p>
+               </div>
+
+               <div class="highlight">
+                   <p><strong>"Eu nunca fiz hipnose. Vai funcionar comigo?"</strong></p>
+                   <p>Sim! Todas as pessoas são hipnotizáveis em algum grau. O protocolo foi desenvolvido especificamente para gestantes, incluindo técnicas adaptadas para diferentes níveis de receptividade.</p>
+               </div>
+
+               <div class="highlight">
+                   <p><strong>"Quanto tempo leva para ver resultados?"</strong></p>
+                   <p>A maioria das gestantes relata melhoria significativa já na primeira sessão. Redução da ansiedade, melhoria do sono e sensação de calma são percebidas imediatamente.</p>
+               </div>
+
+               <div class="highlight">
+                   <p><strong>"Posso fazer o protocolo em qualquer trimestre?"</strong></p>
+                   <p>Sim, embora o primeiro trimestre seja o mais crítico para prevenção de TDAH. Gestantes em qualquer trimestre se beneficiam enormemente do protocolo.</p>
+               </div>
+           </div>
+
+           <div class="countdown">
+               <h2>🚨 ÚLTIMO AVISO</h2>
+               <h3>SUA ÚLTIMA CHANCE DE PROTEGER SEU BEBÊ</h3>
+               <p>Esta página pode sair do ar a qualquer momento.</p>
+               <p>Quando atingirmos as 50 vagas, esta oferta especial será encerrada permanentemente.</p>
+               <p><strong>RESTAM APENAS <span id="spots-remaining-2">47</span> VAGAS</strong></p>
+           </div>
+
+           <div style="text-align: center; margin: 40px 0;">
+               <h2>🎯 CLIQUE AGORA E PROTEJA SEU BEBÊ</h2>
+               
+               <!-- PLACEHOLDER PARA CHECKOUT KWIFY -->
+               <div id="kwify-checkout-placeholder" style="background: #f8f9fa; border: 2px dashed #007bff; padding: 40px; border-radius: 10px; margin: 20px 0;">
+                   <h3 style="color: #007bff; margin-bottom: 20px;">🔗 INTEGRAÇÃO KWIFY - CHECKOUT</h3>
+                   <p style="color: #666; margin-bottom: 15px;">Substitua este bloco pelo código de checkout da Kwify</p>
+                   <p style="color: #666; font-size: 0.9em;">Exemplo de integração:</p>
+                   <code style="background: #e9ecef; padding: 10px; display: block; border-radius: 5px; margin: 10px 0;">
+                       &lt;script src="https://kwify.com.br/checkout.js"&gt;&lt;/script&gt;<br>
+                       &lt;div id="kwify-checkout" data-product-id="SEU_PRODUTO_ID"&gt;&lt;/div&gt;
+                   </code>
+               </div>
+
+               <!-- Botão alternativo para quando não houver integração -->
+               <button class="cta-button" onclick="redirectToCheckout()">
+                   🛡️ SIM, QUERO PROTEGER MEU BEBÊ AGORA! 🛡️<br>
+                   <span style="font-size: 0.8em;">✅ Apenas R$ 597,00 (12x de R$ 49,75)</span>
+               </button>
+
+               <div style="margin-top: 20px;">
+                   <p>✅ Acesso Imediato e Vitalício</p>
+                   <p>✅ Garantia Incondicional de 30 Dias</p>
+                   <p>✅ Protocolo Completo + Bônus</p>
+               </div>
+
+               <div class="countdown" style="margin-top: 30px;">
+                   <p><strong>⏰ RESTAM APENAS <span id="spots-remaining-3">47</span> VAGAS</strong></p>
+                   <p>Não deixe seu bebê pagar o preço da sua indecisão.</p>
+                   <p>Cada segundo que passa é uma oportunidade perdida de proteção neurológica.</p>
+               </div>
+           </div>
+
+           <div style="text-align: center; padding: 40px 20px; background: #f8f9fa; border-radius: 10px; margin-top: 40px;">
+               <h3 style="color: #2c3e50; margin-bottom: 20px;">Imagine-se Daqui a 5 Anos...</h3>
+               
+               <div style="display: flex; justify-content: space-between; gap: 30px; margin: 30px 0;">
+                   <div style="flex: 1; padding: 20px; background: #ffebee; border-radius: 10px; border-left: 5px solid #dc3545;">
+                       <h4 style="color: #dc3545; margin-bottom: 15px;">CENÁRIO 1: Você não agiu</h4>
+                       <p>Seu filho está na escola, com dificuldades de atenção. A professora sugere avaliação para TDAH. Você se lembra desta página e pensa: "E se eu tivesse feito o protocolo?"</p>
+                   </div>
+                   
+                   <div style="flex: 1; padding: 20px; background: #e8f5e8; border-radius: 10px; border-left: 5px solid #28a745;">
+                       <h4 style="color: #28a745; margin-bottom: 15px;">CENÁRIO 2: Você agiu hoje</h4>
+                       <p>Seu filho é uma criança focada, inteligente e equilibrada. Outros pais perguntam seu "segredo". Você sorri, sabendo que fez a escolha certa quando mais importava.</p>
+                   </div>
+               </div>
+               
+               <h3 style="color: #2c3e50; margin-top: 30px;">Qual cenário você escolhe?</h3>
+           </div>
+
+           <div style="text-align: center; margin: 40px 0; padding: 20px; background: #dc3545; color: white; border-radius: 10px;">
+               <h2>⚠️ AVISO FINAL</h2>
+               <p style="font-size: 1.2em; margin-bottom: 20px;">O desenvolvimento neurológico acontece apenas UMA VEZ na vida.</p>
+               <p style="font-size: 1.1em;">Você não terá uma segunda chance.</p>
+               
+               <button class="cta-button" onclick="redirectToCheckout()" style="margin-top: 20px; background: white; color: #dc3545;">
+                   🛡️ PROTEGER MEU BEBÊ AGORA! 🛡️
+               </button>
+           </div>
+
+           <div style="text-align: center; padding: 20px; color: #666; font-size: 0.9em; border-top: 1px solid #eee; margin-top: 40px;">
+               <p>Protocolo desenvolvido com base em evidências científicas atualizadas. Resultados podem variar individualmente. Este material não substitui acompanhamento médico profissional.</p>
+               <p style="margin-top: 10px;">
+                   <strong>Desenvolvido por:</strong> Especialistas em Hipnoterapia Perinatal e Neurociência Fetal<br>
+                   <strong>Baseado em:</strong> Mais de 200 estudos científicos internacionais<br>
+                   <strong>Testado com:</strong> Centenas de gestantes com resultados comprovados
+               </p>
+           </div>
+       </div>
+   </div>
+
+   <script>
+       let currentQuestion = 1;
+       let totalQuestions = 10;
+       let answers = {};
+
+       function updateProgress() {
+           const progress = (currentQuestion - 1) / totalQuestions * 100;
+           document.getElementById('progress').style.width = progress + '%';
+       }
+
+       function nextQuestion() {
+           // Verificar se uma opção foi selecionada
+           const selectedOption = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+           if (!selectedOption) {
+               alert('Por favor, selecione uma resposta antes de continuar.');
+               return;
+           }
+
+           // Salvar resposta
+           answers[`q${currentQuestion}`] = parseInt(selectedOption.value);
+
+           // Ocultar pergunta atual
+           document.querySelector(`.question[data-question="${currentQuestion}"]`).classList.remove('active');
+
+           // Próxima pergunta
+           currentQuestion++;
+
+           if (currentQuestion <= totalQuestions) {
+               // Mostrar próxima pergunta
+               document.querySelector(`.question[data-question="${currentQuestion}"]`).classList.add('active');
+               updateProgress();
+
+               // Se for a última pergunta, trocar botão
+               if (currentQuestion === totalQuestions) {
+                   document.getElementById('nextBtn').classList.add('hidden');
+                   document.getElementById('submitBtn').classList.remove('hidden');
+               }
+           }
+       }
+
+       function calculateResults() {
+           // Verificar se a última pergunta foi respondida
+           const selectedOption = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+           if (!selectedOption) {
+               alert('Por favor, selecione uma resposta antes de continuar.');
+               return;
+           }
+
+           // Salvar última resposta
+           answers[`q${currentQuestion}`] = parseInt(selectedOption.value);
+
+           // Calcular pontuação total
+           let totalScore = 0;
+           for (let i = 1; i <= totalQuestions; i++) {
+               totalScore += answers[`q${i}`];
+           }
+
+           // Determinar categoria de risco
+           let riskLevel, riskClass, riskMessage;
+
+           if (totalScore <= 15) {
+               riskLevel = "RISCO BAIXO";
+               riskClass = "risk-low";
+               riskMessage = `
+                   <div class="risk-low" style="padding: 30px; border-radius: 15px; margin: 20px 0;">
+                       <h2>🟢 ${riskLevel} (${totalScore}/40 pontos)</h2>
+                       <h3>Parabéns! Você está gerenciando bem sua ansiedade gestacional.</h3>
+                       <p>Seus níveis de preocupação estão dentro de parâmetros normais e saudáveis. No entanto, mesmo gestantes com baixa ansiedade podem se beneficiar de técnicas de relaxamento e preparação para o parto.</p>
+                       <p><strong>Recomendação:</strong> Mantenha práticas de autocuidado e considere técnicas preventivas de relaxamento.</p>
+                   </div>
+               `;
+           } else if (totalScore <= 25) {
+               riskLevel = "RISCO MODERADO";
+               riskClass = "risk-moderate";
+               riskMessage = `
+                   <div class="risk-moderate" style="padding: 30px; border-radius: 15px; margin: 20px 0;">
+                       <h2>🟡 ${riskLevel} (${totalScore}/40 pontos)</h2>
+                       <h3>Atenção: Sua ansiedade pode estar começando a afetar você e seu bebê.</h3>
+                       <p>Você está experimentando níveis de ansiedade que podem estar elevando seus níveis de cortisol de forma preocupante. Embora ainda não esteja em zona de alto risco, é o momento ideal para agir preventivamente.</p>
+                       
+                       <h4>Sinais de alerta identificados:</h4>
+                       <ul>
+                           <li>Preocupações frequentes sobre o desenvolvimento fetal</li>
+                           <li>Tensão física regular</li>
+                           <li>Dificuldades ocasionais de sono</li>
+                           <li>Consciência crescente sobre os riscos da ansiedade</li>
+                       </ul>
+                       
+                       <p><strong>Recomendação:</strong> É altamente recomendável iniciar um protocolo de redução de ansiedade especializado para gestantes AGORA, antes que os níveis se tornem mais prejudiciais.</p>
+                   </div>
+               `;
+           } else {
+               riskLevel = "RISCO ALTO";
+               riskClass = "risk-high";
+               riskMessage = `
+                   <div class="risk-high" style="padding: 30px; border-radius: 15px; margin: 20px 0;">
+                       <h2>🔴 ${riskLevel} (${totalScore}/40 pontos)</h2>
+                       <h3>ALERTA: Sua ansiedade está em níveis que podem comprometer seriamente o desenvolvimento neurológico do seu bebê.</h3>
+                       <p>Seus resultados indicam que você está vivenciando níveis de ansiedade e estresse que, segundo pesquisas científicas, podem aumentar significativamente o risco de seu bebê desenvolver TDAH, problemas de atenção e dificuldades comportamentais.</p>
+                       
+                       <h4>Riscos identificados:</h4>
+                       <ul>
+                           <li>2.4 vezes maior probabilidade de TDAH no bebê</li>
+                           <li>Possível comprometimento do desenvolvimento do córtex pré-frontal</li>
+                           <li>Alterações epigenéticas que podem afetar seu filho por toda a vida</li>
+                           <li>Ciclo de ansiedade que tende a se intensificar</li>
+                       </ul>
+                       
+                       <p><strong>AÇÃO URGENTE NECESSÁRIA:</strong> Cada dia que passa sem intervenção adequada é uma oportunidade perdida de proteger o desenvolvimento neurológico do seu bebê.</p>
+                   </div>
+               `;
+           }
+
+           // Mostrar resultados
+           document.getElementById('result-content').innerHTML = riskMessage;
+           document.getElementById('quiz-section').style.display = 'none';
+           document.getElementById('results-section').style.display = 'block';
+
+           // Scroll para o topo
+           window.scrollTo(0, 0);
+       }
+
+       function showSalesPage() {
+           document.getElementById('results-section').style.display = 'none';
+           document.getElementById('sales-page').style.display = 'block';
+           
+           // Scroll para o topo
+           window.scrollTo(0, 0);
+
+           // Iniciar contador de vagas (simulação)
+           updateSpotCounter();
+       }
+
+       function updateSpotCounter() {
+           // Simular diminuição de vagas
+           const spots = [47, 46, 45, 44, 43, 42, 41, 40];
+           let currentSpot = 0;
+
+           setInterval(() => {
+               if (currentSpot < spots.length - 1) {
+                   currentSpot++;
+                   const remainingSpots = spots[currentSpot];
+                   
+                   // Atualizar todos os contadores de vagas
+                   document.getElementById('spots-remaining').textContent = remainingSpots;
+                   document.getElementById('spots-remaining-2').textContent = remainingSpots;
+                   document.getElementById('spots-remaining-3').textContent = remainingSpots;
+               }
+           }, 120000); // A cada 2 minutos
+       }
+
+       function redirectToCheckout() {
+           // Aqui você pode integrar com a Kwify ou redirecionar para checkout
+           // Exemplo de redirecionamento:
+           // window.location.href = 'https://pay.kwify.com.br/seu-produto-id';
+           
+           // Para demonstração, mostrar alerta
+           alert('Redirecionando para checkout...\n\nAqui você integraria com a Kwify ou seu gateway de pagamento preferido.');
+           
+           // Opcional: abrir em nova janela
+           // window.open('https://pay.kwify.com.br/seu-produto-id', '_blank');
+       }
+
+       // Permitir navegação com Enter
+       document.addEventListener('keypress', function(e) {
+           if (e.key === 'Enter') {
+               if (currentQuestion < totalQuestions) {
+                   nextQuestion();
+               } else if (currentQuestion === totalQuestions) {
+                   calculateResults();
+               }
+           }
+       });
+
+       // Permitir seleção com números
+       document.addEventListener('keypress', function(e) {
+           if (e.key >= '1' && e.key <= '4') {
+               const optionIndex = parseInt(e.key);
+               const currentQuestionElement = document.querySelector(`.question[data-question="${currentQuestion}"]`);
+               if (currentQuestionElement) {
+                   const options = currentQuestionElement.querySelectorAll('input[type="radio"]');
+                   if (options[optionIndex - 1]) {
+                       options[optionIndex - 1].checked = true;
+                   }
+               }
+           }
+       });
+
+       // Inicializar progresso
+       updateProgress();
+   </script>
+</body>
+</html>
